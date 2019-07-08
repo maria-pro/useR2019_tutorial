@@ -61,12 +61,12 @@ __________________________________
 * Twitter
     +  [Twitter Developer](https://developer.twitter.com/en/docs/accounts-and-users/subscribe-account-activity/FAQ.html)
     + [Setting API for rtweet](https://rtweet.info/articles/auth.html)
-    + [Twitter API Explorer]()
+    + [Twitter Developer Labs](https://developer.twitter.com/en/labs.html)
 
 * Facebook/Instagram
     +  [Facebook Developer](https://developers.facebook.com/)
     +  [Instagram Graph API](https://developers.facebook.com/docs/instagram-api)
-    +  [Facebook API Explorer] ()
+    +  [Graph API Explorer](https://developers.facebook.com/tools/explorer/)
 
 * YouTube 
     +  [Google Developer](https://developers.google.com/)
