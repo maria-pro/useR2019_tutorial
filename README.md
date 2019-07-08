@@ -27,7 +27,7 @@ install.packages("instaR")
 
 * **Youtube** - see comments in the tute
 
-install.packages("tubeR")
+install.packages("tuber")
 
 * **Text analytics**
 
