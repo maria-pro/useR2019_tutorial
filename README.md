@@ -1,4 +1,6 @@
-# useR2019_tutorial
+## UseR2019_tutorial
+
+# Watch me: introduction to social media analytics
 
 Tutorial for UseR2019
 ________________________
