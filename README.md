@@ -33,9 +33,7 @@ install.packages("tuber")
 
 install.packages("tidyverse")
 
-install.packages("tidytext")
-install.packages ("tidyR")
-install.packages("wordcloud2")
+install.packages(c("tidytext", "tidyr", "wordcloud2"))
 
 * **Image analytics**
 
