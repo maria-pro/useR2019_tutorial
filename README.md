@@ -34,7 +34,7 @@ install.packages("tubeR")
 install.packages("tidyverse")
 
 install.packages("tidytext")
-
+install.packages ("tidyR")
 install.packages("wordcloud2")
 
 * **Image analytics**
