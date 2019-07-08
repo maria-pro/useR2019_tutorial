@@ -12,27 +12,34 @@ So that our session is as practical and handson as possible, please make sure in
 
 __________________________________
 * working with APIs
+
 install.packages("httr")
 install.packages("jsonlite")
 
 * Twitter
+
 install.packages("rtweet")
 
 * Instagram - see comments in the tute
+
 install.packages("instaR")
 
 * Youtube - see comments in the tute
+
 install.packages("tubeR")
 
 * text analytics
+
 install.packages("tidyverse")
 install.packages("tidytext")
 install.packages("wordcloud2")
 
 * image analytics
+
 install.packages("RoogleVision")
 
 * additional
+
 install.packages ("lubridate")
 __________________________________
 
