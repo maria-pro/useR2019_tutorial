@@ -14,6 +14,7 @@ __________________________________
 * working with APIs
 
 install.packages("httr")
+
 install.packages("jsonlite")
 
 * Twitter
@@ -31,7 +32,9 @@ install.packages("tubeR")
 * text analytics
 
 install.packages("tidyverse")
+
 install.packages("tidytext")
+
 install.packages("wordcloud2")
 
 * image analytics
@@ -54,13 +57,14 @@ You will also need to have
 __________________________________
 
 # Resources
+
 * Twitter
     +  [Twitter Developer](https://developer.twitter.com/en/docs/accounts-and-users/subscribe-account-activity/FAQ.html)
     + [Setting API for rtweet](https://rtweet.info/articles/auth.html)
     + [Twitter API Explorer]()
 
 * Facebook/Instagram
-kjkj[Facebook Developer](https://developers.facebook.com/)
+- [Facebook Developer](https://developers.facebook.com/)
 - [Instagram Graph API](https://developers.facebook.com/docs/instagram-api)
 - [Facebook API Explorer] ()
 
