@@ -11,28 +11,28 @@ Welcome! we are all excited for the tutorial tomorrow and hope we will have some
 So that our session is as practical and handson as possible, please make sure install the following packages:
 
 __________________________________
-#working with APIs
+* working with APIs
 install.packages("httr")
 install.packages("jsonlite")
 
-#Twitter
+* Twitter
 install.packages("rtweet")
 
-#Instagram - see comments in the tute
+* Instagram - see comments in the tute
 install.packages("instaR")
 
-#Youtube - see comments in the tute
+* Youtube - see comments in the tute
 install.packages("tubeR")
 
-#text analytics
+* text analytics
 install.packages("tidyverse")
 install.packages("tidytext")
 install.packages("wordcloud2")
 
-#image analytics
+* image analytics
 install.packages("RoogleVision")
 
-#additional
+* additional
 install.packages ("lubridate")
 __________________________________
 
