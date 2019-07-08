@@ -37,7 +37,10 @@ install.packages(c("tidytext", "tidyr", "wordcloud2"))
 
 * **Image analytics**
 
-install.packages("RoogleVision", repos = c(getOption("repos"), "http://cloudyr.github.io/drat"))
+if (!require("devtools")) {
+    install.packages("ghit")
+}
+devtools::install_github("cloudyr/RoogleVision")
 
 * **Additional**
 
