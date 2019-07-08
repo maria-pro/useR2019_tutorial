@@ -11,25 +11,25 @@ Welcome! we are all excited for the tutorial tomorrow and hope we will have some
 So that our session is as practical and handson as possible, please make sure install the following packages:
 
 __________________________________
-* working with APIs
+* **Working with APIs**
 
 install.packages("httr")
 
 install.packages("jsonlite")
 
-* Twitter
+* **Twitter**
 
 install.packages("rtweet")
 
-* Instagram - see comments in the tute
+* **Instagram** - see comments in the tute
 
 install.packages("instaR")
 
-* Youtube - see comments in the tute
+* **Youtube** - see comments in the tute
 
 install.packages("tubeR")
 
-* text analytics
+* **Text analytics**
 
 install.packages("tidyverse")
 
@@ -37,11 +37,11 @@ install.packages("tidytext")
 
 install.packages("wordcloud2")
 
-* image analytics
+* **Image analytics**
 
 install.packages("RoogleVision")
 
-* additional
+* **Additional**
 
 install.packages ("lubridate")
 __________________________________
@@ -64,12 +64,12 @@ __________________________________
     + [Twitter API Explorer]()
 
 * Facebook/Instagram
-- [Facebook Developer](https://developers.facebook.com/)
-- [Instagram Graph API](https://developers.facebook.com/docs/instagram-api)
-- [Facebook API Explorer] ()
+    +  [Facebook Developer](https://developers.facebook.com/)
+    +  [Instagram Graph API](https://developers.facebook.com/docs/instagram-api)
+    +  [Facebook API Explorer] ()
 
 * YouTube 
-- [Google Developer](https://developers.google.com/)
-- [Google API](https://developers.google.com/youtube/documentation/)
-- [Google API Explorer] (https://developers.google.com/apis-explorer/#p/)
+    +  [Google Developer](https://developers.google.com/)
+    +  [Google API](https://developers.google.com/youtube/documentation/)
+    +  [Google API Explorer] (https://developers.google.com/apis-explorer/#p/)
 
