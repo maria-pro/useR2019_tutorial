@@ -1,0 +1,302 @@
+---
+title: "Watch me: introduction to social media analytics"
+author: "MariaProkofieva"
+date: "15/06/2019"
+output: html_document
+---
+
+```{r setup, include = FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, warning = FALSE, message = FALSE, fig.width = 9, fig.height=6)
+if (!require("pacman")) install.packages("pacman")
+library(pacman)
+p_load(httr, jsonlite, tidyverse, tidytext, magrittr)
+```
+
+
+# Packages to install
+```{r eval=FALSE}
+#working with APIs
+install.packages("httr")
+install.packages("jsonlite")
+#Twitter
+install.packages("rtweet")
+#Instagram - see comments
+install.packages("instaR")
+#Youtube - see comments
+install.packages("tubeR")
+
+#text analytics
+install.packages("tidyverse")
+install.packages("tidytext")
+install.packages("wordcloud2")
+
+#image analytics
+install.packages("RoogleVision")
+
+#additional
+install.packages("knitr")
+install.packages("plotly")
+install.packages ("lubridate")
+```
+
+# Resources
+* Twitter
+    +  [Twitter Developer](https://developer.twitter.com/en/docs/accounts-and-users/subscribe-account-activity/FAQ.html)
+    + [Setting API for rtweet](https://rtweet.info/articles/auth.html)
+    + [Twitter API Explorer]()
+
+* Facebook/Instagram
+kjkj[Facebook Developer](https://developers.facebook.com/)
+- [Instagram Graph API](https://developers.facebook.com/docs/instagram-api)
+- [Facebook API Explorer] ()
+
+* YouTube 
+- [Google Developer](https://developers.google.com/)
+- [Google API](https://developers.google.com/youtube/documentation/)
+- [Google API Explorer] (https://developers.google.com/apis-explorer/#p/)
+
+
+# Introduction to APIs:
+
+Types of APIs:
+
+- REST API: read/modify a user's account: HTTP request (e.g. GET, POST, PUT, PATCH, DELETE) to  communicate between client and server (e.g. Authorization, Accept, Content-Type).
+- Streaming API: read data to deliver in real-time.
+
+### Before you start
+
+The general procedure for working with social media data includes the following steps:
+
+**Step 0** 
+
+- Be clear what you want to achieve: e.g. investigate the market landscape, measure reach of your social media campaigns, spy on competitors, see if your new product will be a success. 
+
+- Identify social media platforms  and measurements you will use 
+
+- Identify variables that you will use and approaches you will employ (sentiment analysis? topic modeling? image recognition?)
+
+**Step 1**
+
+- learn about platform's specific requirements in relation to data collection, privacy and data management
+
+- setup developer's access to the platform (optional with some R packages, like `RTweet`)
+
+- learn about the platform's API. You may most likely be using a ready-made R package, but knowing available capabilities is a must. 
+Why?
+
+Social media rules change too quickly and your perfect R package may not work suddenly. To fix this quickly you need to know what happened. 
+Be ware! Platform may not tell you about changes done and announce them only after!
+
+**Step 2**
+Setting up your developers access and collecting data:
+
+### 1. Twitter
+
+#### Setting up Twitter developer account
+
+Applying for Twitter Developer access takes time and require approval (approx. 24 hrs wait).
+
+The step-by-step procedure is available [here](https://rtweet.info/articles/auth.html)
+**The tutorial will use `RTweet`package that has a pre-build Twitter app and does not require an individual Twitter Developer account.
+
+Types of access:
+
+```{r echo=FALSE,fig.cap="Twitter Developer access types", out.width=300}
+knitr::include_graphics("image/TwitterPremiumAPIs.gif")
+```
+
+* Standard APIs: Free! testing, posting to Twitter and get data not available in high volumes.
+
+* [Premium APIs](https://developer.twitter.com/en/premium-apis.html): upgrade to scales access 
+- more Tweets per request
+- higher rate limits
+- more complex queries
+- metadata enrichments (e.g. profile geo information), etc
+
+* [Enterprise APIs](https://developer.twitter.com/en/docs/tutorials/twitters-enterprise-api-suite.html)
+- real-time and historical social data
+- customized with predictable pricing
+
+** Recent developments and guidelines - Twitter Developer Labs**
+
+[Twitter Developer Labs](https://developer.twitter.com/en/labs) was launched in May 2019 (after a long break!) to provide access to pre-release APIs to test and experiment. [Feedback](https://twitter.com/TwitterDev) is welcomed.
+
+Particular interest APIs:
+
+- [GET /Tweets](https://developer.twitter.com/en/docs/labs/tweets-and-users/overview)
+- [GET /Users](https://developer.twitter.com/en/docs/labs/tweets-and-users/overview)
+- [Real-time streaming access](https://developer.twitter.com/en/docs/tweets/filter-realtime/guides/connecting.html)
+
+Available APIs include REST API and Streaming API
+
+Let's have a close look at [Twitter data and text analytics](Twitter.Rmd)
+
+### 2. Facebook/Instagram
+
+The documentation is confusing here as there are two product:
+
+- [Instagram Graph API](https://developers.facebook.com/docs/instagram-api) (business)
+
+- [Instagram Platform API](https://www.instagram.com/developer/?fbclid=IwAR0IMJ0vgBtaPSt-Nku61u_lLMEHqQLUTPy-WeDCkRkiKEnBny18niodjmc) (non-business, depricated)
+
+Working with Facebook/Instagram requires approval: [App Review process](https://developers.facebook.com/docs/apps/review).
+
+Before you start your application process, you need to have:
+
+- An [Instagram Business Account](https://help.instagram.com/502981923235522?fbclid=IwAR31qowUhq_XsheZTPspxf5IeeW_P2h7MY8fWqW7TGgngpDyuOWzjhWpDkM) or [Instagram Creator Account](https://help.instagram.com/1158274571010880?fbclid=IwAR3KzglcALAzAVDa2dd_bICd_XlgA3dkaU0RDuPyhoVS6eao1NjdrQ-C5xk)
+
+- [A Facebook Page connected](https://developers.facebook.com/docs/instagram-api/overview#pages) to that account. To create your Facebook developer account, you need to use your "normal" Facebook account and create a developer account [here](https://developers.facebook.com/) 
+
+```{r echo=FALSE,fig.cap="Creating Facebook Developer account", out.width=500}
+knitr::include_graphics("image/createDeveloper.png")
+```
+
+- A Facebook Developer account that can perform [Tasks on that Page](https://developers.facebook.com/docs/instagram-api/overview#tasks)
+
+- A [registered Facebook App](https://developers.facebook.com/docs/apps#register) with Basic settings configured
+
+Please note that [this guidance](https://www.instagram.com/developer/) for Instagram API is deprecated. While it may work in some instances, it is not the way that Facebook/Instagram expect developers to access data. The suggested way is to use [new Instagram Graph API](https://developers.facebook.com/products/instagram/).
+
+
+#### Instagram side: Set Up and linking a Business Account on Instagram
+
+1. Download the Instagram app smartphone / tablets / computers through the Apple iOS, Google Play, and Windows app stores. Note that some mobile features are not available / require plug-ins to work for desktops or regular web browsers.
+
+2. if you do not have an Instagram account, create one
+
+- Either sign up with your email address or phone number, and then enter a username, OR
+
+- if you have a Facebook account, log in using it and link the accounts.
+
+```{r echo=FALSE,fig.cap="Registering Instagram account", out.width=300}
+knitr::include_graphics("image/inst/inst1.png")
+```
+
+3. Сonvert to a Business account and connect to Facebook
+
+Tap Settings -> Account -> Switch to Business Account.
+
+```{r echo=FALSE,fig.cap="Switching to Business Account", out.width=150}
+knitr::include_graphics("image/inst/instb1.png")
+```
+#### Facebook side: 
+
+Click through the promo slideshow until you get a prompt to connect to Facebook -> Choose a page -> and set the page to “public.”
+
+```{r echo=FALSE, out.width=150}
+knitr::include_graphics("image/inst/instb2.png")
+```
+
+4. Set permissions to manage your Facebook page
+
+Select the Facebook business page you created and make sure that you are an admin on the account, otherwise will not have access
+
+5. Complete the profile setup and business page
+Enter an email, phone number, and address for your business (at least one of them needs to be there)
+
+A new graph icon should appear at the top of the Instagram app. This is your Insights page, where you can keep track of promotions and engagement stats.
+
+At any time, you can go back to the profile page and switch back to a personal account.
+
+If you haven’t already created a Facebook business page, you can do this at the same time. When you get the option to choose a page, select “Create one” at the bottom of the screen.
+
+Set a title for your page, inncluding business category 
+
+6. Create your Facebook developer access 
+
+6.1. Go to developers.facebook.com and create an account there 
+
+```{r echo=FALSE,fig.cap="Creating a new Facebook App", out.width=300}
+knitr::include_graphics("image/inst/facebookDev2.png")
+```
+
+6.2.Configure Facebook Login
+
+```{r echo=FALSE,fig.cap="Configure your Facebook App", out.width=300}
+knitr::include_graphics("image/inst/facebookDev4.png")
+```
+Add the Facebook Login product to your app in the App Dashboard.
+
+```{r echo=FALSE,fig.cap="Configure your Facebook App", out.width=300}
+knitr::include_graphics("image/inst/facebookDev5.png")
+```
+
+All settings can be left as defaults. Set You can leave all settings on their defaults. Redirect_uri in the Valid OAuth redirect URIs field
+
+App ID: a unique App ID for your app that is included when making any calls to Facebook/Twitter APIs. 
+
+Platform: how your users access your app (e.g R is a server-side application.
+
+Privacy Policy and Terms of Service: URL to a privacy policy and terms of service that apply to your app's users. Lots os online resources to generate a simple one for [free](https://www.freeprivacypolicy.com)
+
+Development Mode: initially your app is in the development mode. It limits app access to users who have a role on your app. You need to do all  of your development and testing in development mode, before you submit your application for review. Note: there is no separate review process for individual products (=platforms )
+
+Important that in development mode your app:
+
+- can use all permissions, features, and products
+- can only be installed / used by users who have a role on your app
+- can only be granted permissions by users who have a role on your app
+- can only access User, Page, or Group data from users who have a role on your app, or data from Test Users and Test Pages.
+
+```{r echo=FALSE,out.width=300}
+knitr::include_graphics("image/inst/facebookDev6.png")
+```
+
+6.3. Implement Facebook Login
+
+Set up your implementation to request these permissions:
+
+[instagram_basic](https://developers.facebook.com/docs/apps/review/login-permissions#instagram-basic)
+[pages_show_list] (https://developers.facebook.com/docs/apps/review/login-permissions#pages-show-list)
+
+Now let's have a look what we can do with data from the Instagram. While the actual application requires passing the approval process, we are going to perform preliminary work in R using Instagram Graph API.
+
+
+### 3. YouTube/Google
+
+If you do not have a Google account, you can create one at https://www.google.com/accounts/NewAccount 
+
+1. Go to the Google Developers Console https://console.developers.google.com/ and create a project there
+
+```{r echo=FALSE, out.width=500}
+knitr::include_graphics("image/Youtube1.png")
+```
+
+2. Enable YouTube APIs:
+
+```{r echo=FALSE, out.width=500}
+knitr::include_graphics("image/Youtube2.png")
+```
+
+You need to enable the following APIs YouTube Data API is one of the services that your application is registered to use:
+
+```{r echo=FALSE,out.width=500}
+knitr::include_graphics("image/Youtube3.png")
+```
+
+In the list of APIs, make sure the status is ON for the YouTube Data API v3.
+
+```{r echo=FALSE,out.width=500}
+knitr::include_graphics("image/Youtube4.png")
+```
+
+To use YouTube data API you need to have authorization credentials. 
+The API supports API keys and OAuth 2.0 credentials. 
+
+The tuber package uses OAuth 2.0, but you will also need the API keys for some data extraction, e.g. obtaining YouTube channel ID. 
+
+To set up your credentials, you go to the Credentials section in your Google Developers Console. 
+
+For the OAuth 2.0 setup, set “Authorized redirect URIs” as  http://localhost:1410/
+
+Note down the following:
+
+1. Your API key
+
+2. OAuth 2.0 credentials:
+
+Name: useR2019
+Client ID:
+Client secret:
+
+--------------
