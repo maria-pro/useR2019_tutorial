@@ -260,8 +260,6 @@ Now let's dig further and have a look at tweets and emotions, i.e. sentiment. **
 
 There are some [changes](https://juliasilge.com/blog/sentiment-lexicons/) happening with the textmining packages.
 
-While many dictionaries are available, we will start with the simple dictionary that categorises words into emotions, [NRC](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm). This dictionary is pre-built into `tidytext` / `textdata` packages
-
 Let's have a quick look at available dictionaries:
 
 - [Bing Liu](https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html) : categorises words into positive and negative categories
