@@ -38,6 +38,9 @@ install.packages("knitr")
 install.packages("plotly")
 install.packages ("lubridate")
 ```
+```{r echo=FALSE, out.width=300}
+knitr::include_graphics("image/socialmedia.png")
+```
 
 # Resources
 * Twitter
