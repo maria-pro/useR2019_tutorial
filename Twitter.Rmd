@@ -164,24 +164,6 @@ The hashtag information is stored in the `hashtag` variable. Let's have a look a
 
 We will convert all hashtags to lower case first and then use a `wordcloud` to show the frequencies
 
-```{r}
-kable(data$hashtags[1:5])
-
-tidy_hashtags<-data %>%
-  select(hashtags) %>%
-  unnest_tokens(word, hashtags, token = "words") %>%
-  group_by(word) %>%
-  count() %>%
-  filter(n > 30) %>%
-  ungroup() %>%
-  mutate(word = reorder(word,n)) %>%
-  arrange(desc(word)) %>%
-  rename(freq = n)
-
-library(wordcloud2)
-wordcloud2(tidy_hashtags)
-```
-
 The wordcloud is dominated by "coffee" hashtag and other ones that we included in the search. Now let's see what other hashtags have prominence there. We can use them later to collect further data and have a comprehensive dataset.
 
 or we can go fancy with `color` and `shape` parameters.
@@ -248,12 +230,13 @@ Now let's try to set up and connect and authenticate
 The main function that we use with `RoogleVision` is `getGoogleVisionResponse` and we need to specify'
 `imagePath` (i.e. path to the image), `feature` (i.e. type of detection) and `numResults` (i.e. number of results to return)
 
-For `feature`, we can use 
-- `FACE_DETECTION`, 
-- `LANDMARK_DETECTION`, 
-- `LOGO_DETECTION`, 
-- `LABEL_DETECTION`, 
-- `TEXT_DETECTION`
+For `feature`, we can use:
+
+* `FACE_DETECTION` 
+* `LANDMARK_DETECTION` 
+* `LOGO_DETECTION`
+* `LABEL_DETECTION` 
+* `TEXT_DETECTION`
 
 Let's try and start with the image that we have already used
 
@@ -293,8 +276,8 @@ Now let's add another column to our cleaned dataset `tidy_tweets` that will spec
 
 We will use `hadley/emo` package
 
-```{r eval=FALSE}
-devtools::install_github("hadley/emo")
+```{r}
+#devtools::install_github("hadley/emo")
 library(emo)
 ```
 
@@ -304,15 +287,7 @@ emo::ji("heart")
 
 emo::ji("ghost")
 
-Let's have a look how we can use them to analyse tweets:
+Let's have a look how we can use them to analyse tweets.
 
 Let's first extract them from tweets into a separate column `emoji and `unnest` them
-```{r eval=FALSE}
 
-emoji <- data %>%
-  mutate( 
-    emoji = ji_extract_all(text)
-  ) %>%
-  select(screen_name,emoji) %>% 
-  unnest(emoji) 
-```
