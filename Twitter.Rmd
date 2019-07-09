@@ -1,0 +1,318 @@
+---
+title: "Twitter"
+author: "MariaProkofieva"
+date: "15/06/2019"
+output: html_document
+---
+
+```{r setup, include = FALSE, message=FALSE, warning=FALSE}
+knitr::opts_chunk$set(echo = TRUE, error = TRUE, warning = FALSE, message = FALSE, fig.width = 9, fig.height=6)
+if (!require("pacman")) install.packages("pacman")
+library(pacman)
+p_load(httr, knitr, httpuv, rtweet,  tidyverse, tidytext, magrittr, stringR, textdata, ggpubr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Packages to install
+```{r eval=FALSE}
+#working with APIs
+install.packages("httr")
+install.packages("jsonlite")
+#Twitter
+install.packages("rtweet")
+#Instagram - see comments
+install.packages("instaR")
+#Youtube - see comments
+install.packages("tubeR")
+
+#text analytics
+install.packages("tidyverse")
+install.packages("tidytext")
+install.packages("wordcloud2")
+
+#image analytics
+install.packages("RoogleVision")
+
+#additional
+install.packages("knitr")
+install.packages("plotly")
+```
+
+
+# Collecting data via Twitter Standard API
+
+1. To connect to Twitter from R, you need to have a Twitter account. You can create it [here](https://twitter.com/signup) 
+You need to note down your `username` and `password`
+
+2.You may need developers' acccess if you want to work with API directly or use, e.g. `twitterR`
+
+### Popular packages for working with 
+    * Twitter : 
+    + [twitteR](https://cran.r-project.org/web/packages/twitteR/README.html) - depricated, only REST API
+    + [rtweet](https://rtweet.info/) REST API and stream API
+    * Facebook/instagram
+    + Youtube
+
+### Package `rtweet` 
+
+*Pre-requisite*: install [httpuv](https://github.com/rstudio/httpuv) package.
+
+```{r echo=FALSE, out.width = "100px"}
+knitr::include_graphics("image/rtweet.png")
+```
+
+Let's do our first search and locate Twitter users interested in coffee 
+
+Let's have a look at some **examples**.
+
+`search_users` function searches for user using the specified keyword(s)
+
+This will locate first 1000 user who have `#coffee` in their profile information.
+
+Some most useful functions in `rtweet` package include:
+
+- `search_tweets()`
+
+- `get_timeline()`
+
+- `get_followers()`
+
+- `get_favorites()`
+
+These functions require authorisation - the application `rstats2twitter` is embedded in the package. You will need to approve the browser popup and it will create a token and save it for future use.
+
+## Collect data: search tweets:
+
+`search_tweets(q, n=100, retryonratelimit = FALSE)`: search tweets with a query, only last 6-9 days can be collected.
+
+- `q`: query to be searched, can use `OR` for logic search
+
+   + **keywords** related:  
+    "": match exact phrase
+    #: hashtag
+    @: at mentions)
+    lang:  language of tweet
+    
+    + **Twitter account** related:
+    from: authored by
+    to: sent to
+    retweets_of: retweet author
+    
+    + **Tweet attributes** related:
+    is:retweet ~~ only retweets
+    has:mentions ~~ uses mention(s)
+    has:hashtags ~~ uses hashtags(s)
+
+- `n`: number of tweets to return, the max is 18,000
+- `retryonratelimit`: set to TRUE to search more than 18,000
+
+Let's have a look at more **examples**
+
+Some common examples of twitter search queries (none of these are case sensitive):
+
+|     Search Query      |                   Tweets ...                      |
+|-----------------------|---------------------------------------------------|
+| lang = "en"           | in English                                        |
+| include_rts = FALSE   | exclude retweets                                  |
+| "Paris OR Milan"      | include either "Paris" or "Milan"                 |
+| \`dark chocolate\`    | containing exact phrase                           |
+| \#France -\#Paris     | containing \#france but not \#Paris               |
+| \#France OR \#Toulouse| containing \#France or \#Toulouse or both         |
+
+| search_tweets2        | search using multiple queries                     |
+
+We also have `search_30day` and `search_fullarchive` functions available on [Premium API](https://developer.twitter.com/en/premium-apis.html). The `search_fullarchive` function allows to specify `fromDate` and `toDate`.
+
+`rtweet` also allows to plot retrieved data
+
+**Examples**
+
+Now, we can plot the data, using `ts_plot` function where we can specify:
+
+-`by`: time intervals, e.g. "secs", "mins", "hours", "days", "weeks", or "years"
+
+-`tz`: time zone, e.g. "UTC"
+
+Or we can group our tweets using `group_by` to compare
+
+Data collection needs to be documented so it is reproducable. Things to note:
+
+* Type of Twitter access: standard, premium or enterprise API
+* Environment (e.g. R)
+* The specific function  
+* Exact search query and values
+
+### Downloading tweets for more than 7 days
+
+There is a limit on downloading tweets on Standard API and a cap on the number of search resuts returned (18,000 every 15 minutes). To collect a good dataset for 7+ days, use `cronjob` for Linux/Unix or the `scheduler` for Windows. See [here](https://cran.r-project.org/web/packages/cronR/README.html) on how to set up a cronjob
+
+The dataset that we are going to work with is for coffee!
+
+The hashtags that we used in our search are `hashtags.csv` file and loaded into `hashtags`
+
+Now, lets load tweets, previously saved in the `coffeeTweets.csv` file using `read.csv`function. Note that `rtweet` has a dedicated function to load Twitter format data, `read_twitter_csv` function, from a previously saved as a CSV file.
+
+Let's see how many unique Twitter accounts in the sample and what are the earliest tweets we have.
+
+Let's see the frequencies across different languages. Who is the coffee lover?
+
+Let's investigate which other hashtags were used in tweets that we located and the frequency of those hashtags:
+
+## Hashtag frequency 
+
+The hashtag information is stored in the `hashtag` variable. Let's have a look at them
+
+We will convert all hashtags to lower case first and then use a `wordcloud` to show the frequencies
+
+```{r}
+kable(data$hashtags[1:5])
+
+tidy_hashtags<-data %>%
+  select(hashtags) %>%
+  unnest_tokens(word, hashtags, token = "words") %>%
+  group_by(word) %>%
+  count() %>%
+  filter(n > 30) %>%
+  ungroup() %>%
+  mutate(word = reorder(word,n)) %>%
+  arrange(desc(word)) %>%
+  rename(freq = n)
+
+library(wordcloud2)
+wordcloud2(tidy_hashtags)
+```
+
+The wordcloud is dominated by "coffee" hashtag and other ones that we included in the search. Now let's see what other hashtags have prominence there. We can use them later to collect further data and have a comprehensive dataset.
+
+or we can go fancy with `color` and `shape` parameters.
+
+We can also see how many hashtags users are using and if we can relate a higher number of `hashtags` to higher `favorite_count` and `retweet_count`
+
+Among other hashtags we saw previously in our wordcloud, one refers to the company, **Starbucks**. Let's have a look at their [profile](https://twitter.com/Starbucks)
+
+We can also have a look at how comparative frequency
+
+
+## Media
+
+Some tweets includes media, such as photos and videos. We have several variables that we are going to use to retrieve images, `screen_name`, `media_url`, `media_type`
+
+Now, let's have a look how we can work with image. We can use the location of the image `media_url` to download them using `download.file` function. Let's take a random one from the data.
+
+The particular interest will be on image recognition using Google Vision API.
+
+# Google Vision API
+
+`Cloud Vision API` is focused on vision detection features, such as image labeling, face and landmark detection, text recorginition (printed and handwritten), and tagging of explicit content. It uses pre-trained machine learning models and works with [REST APIs](https://cloud.google.com/vision/docs/object-localizer). 
+
+We can try there API [here](https://cloud.google.com/vision/#vision-api-demo) by dragging our `test.jpg` image that we downloaded from `Twitter'
+
+Google has also another product, `AutoML Vision`, which allows training your own custom machine learning models. Its documentation is available [here](https://cloud.google.com/vision/automl/object-detection/docs/)
+
+On smaller scale projects, `Cloud Vision API` is [free](https://cloud.google.com/vision/#vision-api-pricing): 
+
+With **free** 1,000 units for monthly usage for 
+
+- facial detection, 
+- label detection,
+- landmark detection, 
+- logo detection	
+
+We can explore the power of `Google Vision API` using the `RoogleVision package` in R.
+
+Before we start using the package we need to create a [Google Developer account](https://console.developers.google.com) that we will use for authentication.
+
+We will need
+
+- create a project
+- enable billing  - you need to have billing though with small number of requests there will be no costs.
+
+```{r echo=FALSE, out.width=500}
+knitr::include_graphics("image/googleBilling.png")
+```
+- enable 'Google Cloud Vision API'
+
+```{r echo=FALSE, out.width=500}
+knitr::include_graphics("image/GoogleVision.png")
+```
+-  go to credentials to create OAuth 2.0 client ID: copy client_id and client_secret from JSON file.
+
+
+To connect to the API you will need to use
+
+- `client_id`
+- `client_secret`
+
+Now let's try to set up and connect and authenticate
+
+The main function that we use with `RoogleVision` is `getGoogleVisionResponse` and we need to specify'
+`imagePath` (i.e. path to the image), `feature` (i.e. type of detection) and `numResults` (i.e. number of results to return)
+
+For `feature`, we can use 
+- `FACE_DETECTION`, 
+- `LANDMARK_DETECTION`, 
+- `LOGO_DETECTION`, 
+- `LABEL_DETECTION`, 
+- `TEXT_DETECTION`
+
+Let's try and start with the image that we have already used
+
+`LABEL_DETECTION` refers to identifying general objects, locations, activities, animal species, products, and more.
+
+Have fun!
+
+#Working with tweets  
+Let's clean our tweets first and convert them to [tidytext](https://www.tidytextmining.com) format. We are also going to remove the re-tweets and stopwords. We will use `unnest_tokens` function that converts our tweets into smaller units, i.e. token, in our case specified as "tweets"
+
+`unnest_tokens` is a fantastic function that do all the hard work for us. Let's have a quick look at their parameters:
+
+- `token`: refers to the unit meaure used to `tokenization`. `words` is the default option, but other options can be `ngrams`, `sentences`, `regex`, `tweets`, etc.
+
+- `to_lower`: by default is set to `TRUE` and converts tokens to lowercase
+
+
+## Sentiment analysis
+
+Now let's dig further and have a look at tweets and emotions, i.e. sentiment. **Sentiment analysis** refers to analysing the word choice to translate emotions into text. It is based on using special dictionaries where words are categorised according to the emotional colouring.
+
+There are some [changes](https://juliasilge.com/blog/sentiment-lexicons/) happening with the textmining packages.
+
+While many dictionaries are available, we will start with the simple dictionary that categorises words into emotions, [NRC](http://saifmohammad.com/WebPages/NRC-Emotion-Lexicon.htm). This dictionary is pre-built into `tidytext` / `textdata` packages
+
+Let's have a quick look at available dictionaries:
+
+- [Bing Liu](https://www.cs.uic.edu/~liub/FBS/sentiment-analysis.html) : categorises words into positive and negative categories
+- [AFINN](https://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=6010) : assigns words with a score  between -5 (negative sentiment) and 5 (positive sentiment)
+- [Loughran and McDonald](https://www3.nd.edu/~mcdonald/Word_Lists_files/Documentation/Documentation_LoughranMcDonald_MasterDictionary.pdf): originally a business dictionary, used to 
+
+Now let's add another column to our cleaned dataset `tidy_tweets` that will specify the sentiment for each token and plot it
+
+#Emojis
+
+`Emoji` are smileys used in `Twitter` and communications.They are numerous and fun! They are  like emoticons, but emoji are actual pictures instead of typographics. 
+
+We will use `hadley/emo` package
+
+```{r eval=FALSE}
+devtools::install_github("hadley/emo")
+library(emo)
+```
+
+They are fun:
+
+emo::ji("heart")
+
+emo::ji("ghost")
+
+Let's have a look how we can use them to analyse tweets:
+
+Let's first extract them from tweets into a separate column `emoji and `unnest` them
+```{r eval=FALSE}
+
+emoji <- data %>%
+  mutate( 
+    emoji = ji_extract_all(text)
+  ) %>%
+  select(screen_name,emoji) %>% 
+  unnest(emoji) 
+```
