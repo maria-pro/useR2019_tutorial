@@ -27,19 +27,20 @@ install.packages("instaR")
 
 * **Youtube** - see comments in the tute
 
-install.packages("tubeR")
+install.packages("tuber")
 
 * **Text analytics**
 
 install.packages("tidyverse")
 
-install.packages("tidytext")
-install.packages ("tidyR")
-install.packages("wordcloud2")
+install.packages(c("tidytext", "tidyr", "wordcloud2"))
 
 * **Image analytics**
 
-install.packages("RoogleVision")
+if (!require("devtools")) {  
+    install.packages("ghit")  
+}  
+devtools::install_github("cloudyr/RoogleVision")
 
 * **Additional**
 
